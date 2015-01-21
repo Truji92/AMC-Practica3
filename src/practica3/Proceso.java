@@ -17,7 +17,7 @@ public interface Proceso {
      * @param estado Estado a comprobar.
      * @return True si es final, False en caso contrario.
      */
-    public abstract boolean esFinal(int estado); //true si estado es un estado final
+    public abstract boolean esFinal(int estado);
 
     /**
      * Analiza una cadena de texto pasada por parámetro.
@@ -26,7 +26,7 @@ public interface Proceso {
      * @return True si el automata acepta la cadena, False en caso contrario
      *
      */
-    public abstract boolean reconocer(String cadena); //true si la cadena es reconocida
+    public abstract boolean reconocer(String cadena);
 
     @Override
     public abstract String toString(); //muestra las transiciones y estados finales

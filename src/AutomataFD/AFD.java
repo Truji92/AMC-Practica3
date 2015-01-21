@@ -5,10 +5,11 @@
  */
 package AutomataFD;
 
+import practica3.Proceso;
+
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import practica3.Proceso;
 
 /**
  *
@@ -23,8 +24,8 @@ public class AFD implements Cloneable, Proceso {
      * Constructor por defecto, Inicializa un automata sin reglas ni estados.
      */
     public AFD() {
-        transiciones = new HashSet<>();
-        estadosFinales = new HashSet<>();
+        transiciones = new HashSet<TransicionAFD>();
+        estadosFinales = new HashSet<Integer>();
     }
 
     /**
@@ -33,8 +34,8 @@ public class AFD implements Cloneable, Proceso {
      * @param otro Automata modelo.
      */
     public AFD(AFD otro) {
-        transiciones = new HashSet<>();
-        estadosFinales = new HashSet<>();
+        transiciones = new HashSet<TransicionAFD>();
+        estadosFinales = new HashSet<Integer>();
         for (TransicionAFD transicion : otro.transiciones) {
             try {
                 transiciones.add((TransicionAFD) transicion.clone());
@@ -86,10 +87,10 @@ public class AFD implements Cloneable, Proceso {
 
     @Override
     public boolean reconocer(String cadena) {
-        char[] simbolo = cadena.toCharArray();
+        char[] simbolos = cadena.toCharArray();
         int estado = 0; //El estado inicial es el 0
-        for (int i = 0; i < simbolo.length; i++) {
-            estado = transicion(estado, simbolo[i]);
+        for (char simbolo : simbolos) {
+            estado = transicion(estado, simbolo);
         }
         return esFinal(estado);
     }
@@ -140,14 +141,24 @@ public class AFD implements Cloneable, Proceso {
     
     public static void main(String[] args) {
         AFD automata = new AFD();
-        automata.agregarTransicion(0, 'A', 1);
-        automata.agregarTransicion(1, 'B', 2);
-        automata.agregarTransicion(2, 'C', 3);
-        automata.estadosFinales.add(2);
-        automata.estadosFinales.add(3);
+        automata.agregarTransicion(0, 'J', 1);
+        automata.agregarTransicion(0, 'j', 1);
+        automata.agregarTransicion(1, 'O', 2);
+        automata.agregarTransicion(1, 'o', 2);
+        automata.agregarTransicion(2, 'P', 3);
+        automata.agregarTransicion(2, 'p', 3);
+        automata.agregarTransicion(3, 'U', 4);
+        automata.agregarTransicion(3, 'u', 4);
+        automata.agregarTransicion(4, 'T', 5);
+        automata.agregarTransicion(4, 't', 5);
+        automata.agregarTransicion(5, 'A', 6);
+        automata.agregarTransicion(5, 'a', 6);
+        automata.estadosFinales.add(6);
         
         System.out.println(automata);
-        
-        System.out.println(automata.reconocer("ABB"));
+
+        String cadena = "jop uta";
+        System.out.println(cadena);
+        System.out.println(automata.reconocer(cadena));
     }
 }
