@@ -152,15 +152,61 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
+    static AFND contenidoLambda(String archivo) throws FileNotFoundException, IOException
+    {
+        String contenido;
+        String[] partes,partes2;
+        int[] estf;
+        AFND automata=new AFND();
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((contenido = b.readLine())!=null)
+        {
+            partes=contenido.split(";");
+            partes2=partes[1].split(",");
+            estf=new int[partes2.length];
+            for(int i=0; i<partes2.length; i++)
+                estf[i]=Integer.parseInt(partes2[i]);
+            
+            automata.agregarTransicionLambda(Integer.parseInt(partes[0]),estf);
+        }
+        b.close();
+        return automata;
+    }
+
+    static AFND contenido(String archivo) throws FileNotFoundException, IOException
+    {
+        String contenido;
+        String[] partes,partes2;
+        int[] estf;
+        AFND automata=new AFND();
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((contenido = b.readLine())!=null)
+        {
+            partes=contenido.split(";");
+            partes2=partes[2].split(",");
+            estf=new int[partes2.length];
+            for(int i=0; i<partes2.length; i++)
+                estf[i]=Integer.parseInt(partes2[i]);
+            
+            automata.agregarTransicion(Integer.parseInt(partes[0]),partes[1].toCharArray()[0],estf);
+        }
+        b.close();
+        return automata;
+    }
+
     public static void main(String[] args) {
         AFND automata = new AFND();
         automata.estadosFinales.add(3);
+        /*
         automata.agregarTransicion(0, '0', new int[]{0, 1});
         automata.agregarTransicion(0, '1', new int[]{0});
         automata.agregarTransicion(1, '0', new int[]{2});
         automata.agregarTransicion(1, '1', new int[]{2});
         automata.agregarTransicion(2, '0', new int[]{3});
-        automata.agregarTransicion(2, '1', new int[]{3});
+        automata.agregarTransicion(2, '1', new int[]{3});*/
+        automata=contenido("NOMBRE FICHERO");
 
         String cadena = "001011011";
         System.out.println(cadena);
