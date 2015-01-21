@@ -1,76 +1,72 @@
 package Interface;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by caenrique93 on 21/01/15.
  */
 public class Automata extends JFrame {
-    JPanel panel;
 
-    JComboBox<String> selAutomatas;
-    JLabel listAutomatas;
-    JLabel labelFichero;
-    
-    JTextArea textArea;
-    JTextField input;
-
-    JButton bEjecutar;
-    JButton bCargar;
-    JButton bSeleccionar;
+    JFileChooser fileChooser;
 
     public Automata() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Práctica de Autómatas - AyMC");
-        setSize(600, 800);
+        setSize(600, 600);
         setLocationRelativeTo(null);
 
-        String[] automatas_src = {"Autómata Finito Determinista",
+        JPanel top = new JPanel(new BorderLayout());
+        JPanel bottom = new JPanel(new BorderLayout());
+        final JTextArea middle = new JTextArea();
+
+        final String[] opc = {"Autómata Finito Determinista",
             "Autómata Finito No Determinista"};
 
-        panel = new JPanel();
-        selAutomatas = new JComboBox<String>(automatas_src);
-        input = new JTextField();
-        labelFichero = new JLabel("Fichero");
-        listAutomatas = new JLabel("Autómatas");
-        textArea = new JTextArea();
+        final JTextField input = new JTextField();
+        final JComboBox<String> opciones = new JComboBox<String>(opc);
 
-        bCargar = new JButton("Cargar");
-        bCargar.addActionListener(new ActionListener() {
+        JButton bSelec = new JButton("Seleccionar");
+        bSelec.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser jFileChooser = new JFileChooser();
+                int returVal = jFileChooser.showOpenDialog(middle);
 
+                if(returVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+
+                }
             }
         });
 
-        bSeleccionar = new JButton("Seleccionar");
-        bSeleccionar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-            }
-        });
-
-        bEjecutar = new JButton("Ejecutar");
+        JButton bEjecutar = new JButton("Ejecutar");
         bEjecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                String texto = input.getText();
+                String opcion = (String) opciones.getSelectedItem();
+                if(opcion.equals(opc[0])) {
 
+                } else {
+
+                }
             }
         });
 
-        panel.add(listAutomatas);
-        panel.add(selAutomatas);
-        panel.add(labelFichero);
-        panel.add(input);
-        panel.add(bSeleccionar);
-        panel.add(bCargar);
-        panel.add(bEjecutar);
-        panel.add(textArea);
+        top.add(opciones, BorderLayout.CENTER);
+        top.add(bSelec, BorderLayout.EAST);
 
-        add(panel);
+        bottom.add(input, BorderLayout.CENTER);
+        bottom.add(bEjecutar, BorderLayout.EAST);
+
+        this.add(top, BorderLayout.NORTH);
+        this.add(middle, BorderLayout.CENTER);
+        this.add(bottom, BorderLayout.SOUTH);
+
         setVisible(true);
     }
 }
