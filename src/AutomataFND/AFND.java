@@ -5,6 +5,11 @@
  */
 package AutomataFND;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import practica3.Proceso;
 
 import java.util.HashSet;
@@ -51,65 +56,54 @@ public class AFND implements Cloneable, Proceso {
                 macroestado.addAll(transicion.getEstadosDestino());
                 break;
             }
+
         }
-        macroestado.addAll(lambda_clausura(macroestado));
         return macroestado;
+        //TODO 
     }
 
     public Set<Integer> transicion(Set<Integer> macroestado, char simbolo) {
-        Set<Integer> macroestadoDestino = new HashSet<Integer>();
+        return null;
 
-        for (int estado : macroestado) {
-            macroestadoDestino.addAll(transicion(estado, simbolo));
-        }
-        return macroestadoDestino;
     }
 
-    public Set<Integer> transicionLambda(int estado) {
-        Set<Integer> macroestado = new HashSet<Integer>();
-        for (TransicionLambda transicion: transicionesLambda)
-            if (transicion.getEstadoOrigen() == estado) {
-                macroestado.addAll(transicion.getEstadosDestino());
-                break;
-            }
-        return macroestado;
+    public int[] transicionLambda(int estado) {
+        return null;
+
     }
 
     @Override
     public boolean esFinal(int estado) {
-        for (int estadoFinal : estadosFinales)
-            if (estado == estadoFinal)
-                return true;
         return false;
+
     }
 
     public boolean esFinal(Set<Integer> macroestado) {
-        for (int estado : macroestado)
-            if (esFinal(estado))
-                return true;
         return false;
-    }
 
-    private  Set<Integer> lambda_clausura(int estado) {
-        Set<Integer> est = new HashSet<Integer>();
-        est.add(estado);
-        return lambda_clausura(est);
     }
     
-    private Set<Integer> lambda_clausura(Set<Integer> macroestado) {
-        return lambda_clausura(macroestado, true);
-    }
-
+    
     private Set<Integer> lambda_clausura(Set<Integer> macroestado, boolean primera_llamada) {
         Set<Integer> clausura = new HashSet<Integer>();
         if (!primera_llamada) 
             clausura.addAll(macroestado);
-
-        for (int estado : macroestado)
-            for (TransicionLambda transicion : transicionesLambda)
-                if (transicion.getEstadoOrigen() == estado)
-                    if (clausura.addAll(transicion.getEstadosDestino()))
+                    
+        
+        for (int estado : macroestado) {
+            for(TransicionLambda transicion : transicionesLambda) {
+                if (transicion.getEstadoOrigen() == estado) {
+//                    System.out.println("Estado: " + estado + ", transicion: " + transicion.toString());
+//                    System.out.println("Clausura: " + clausura);
+                    if (clausura.addAll(transicion.getEstadosDestino())) {
+//                        System.out.println("Añadir devuelve true");
+//                        System.out.println("Clausura tras añadir: "+clausura);
                         clausura.addAll(lambda_clausura(clausura, false));
+                    } 
+//                    else System.out.println("Añadir devuelve falso");
+                }
+            }
+        }
         
         return clausura;
 
@@ -118,12 +112,11 @@ public class AFND implements Cloneable, Proceso {
     @Override
     public boolean reconocer(String cadena) {
         char[] simbolos = cadena.toCharArray();
-        Set<Integer> macroestado = new HashSet<Integer>();
-        macroestado.add(0);
-        macroestado.addAll(lambda_clausura(0));
+        Set<Integer> estado = new HashSet<Integer>();
+        estado.add(0);//El estado inicial es el 0
+        Set<Integer> macroestado = lambda_clausura(estado, true);
         for (char simbolo : simbolos) {
             macroestado = transicion(macroestado, simbolo);
-            System.out.println(macroestado);
         }
         return esFinal(macroestado);
     }
@@ -132,52 +125,44 @@ public class AFND implements Cloneable, Proceso {
         return null;
 
     }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        AFND automata = new AFND();
-
-        automata.estadosFinales = new HashSet<Integer>();
-        for (int estadofinal : estadosFinales)
-            automata.estadosFinales.add(estadofinal);
-
-        automata.transiciones = new HashSet<TransicionAFND>();
-        for (TransicionAFND transicion: transiciones)
-            automata.transiciones.add((TransicionAFND) transicion.clone());
-
-        automata.transicionesLambda = new HashSet<TransicionLambda>();
-        for (TransicionLambda transicion : transicionesLambda)
-            automata.transicionesLambda.add((TransicionLambda) transicion.clone());
-
+    
+    static AFND contenido(String archivo) throws FileNotFoundException, IOException
+    {
+        String contenido;
+        String[] partes,partes2;
+        int[] estf;
+        AFND automata=new AFND();
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((contenido = b.readLine())!=null)
+        {
+            partes=contenido.split(";");
+            partes2=partes[1].split(",");
+            estf=new int[partes2.length];
+            for(int i=0; i<partes2.length; i++)
+                estf[i]=Integer.parseInt(partes2[i]);
+            
+            automata.agregarTransicionLambda(Integer.parseInt(partes[0]),estf);
+        }
+        b.close();
         return automata;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AFND automata = new AFND();
-        automata.estadosFinales.add(3);
-        automata.agregarTransicion(0, '0', new int[]{0, 1});
-        automata.agregarTransicion(0, '1', new int[]{0});
-        automata.agregarTransicion(1, '0', new int[]{2});
-        automata.agregarTransicion(1, '1', new int[]{2});
-        automata.agregarTransicion(2, '0', new int[]{3});
-        automata.agregarTransicion(2, '1', new int[]{3});
+        /*
+        int[] estadosFinales = {2, 4};
+        automata.agregarTransicionLambda(0, estadosFinales);
+        int[] estadosFinales2 = {7, 24};
+        automata.agregarTransicionLambda(3, estadosFinales2);
+        int[] estadosFinales3 = {8, 9, 3};
+        automata.agregarTransicionLambda(24, estadosFinales3);*/
+        automata=contenido("/home/ztryx/Documentos/AMC-Practica3/automata2.txt");
 
-        String cadena = "001011011";
-        System.out.println(cadena);
-        System.out.println(automata.reconocer(cadena));
-
-        AFND automata2 = new AFND();
-        automata2.estadosFinales.add(2);
-        automata2.estadosFinales.add(4);
-        automata2.agregarTransicion(1, 'a', new int[]{2});
-        automata2.agregarTransicion(2, 'a', new int[]{2});
-        automata2.agregarTransicion(3, 'b', new int[]{4});
-        automata2.agregarTransicion(4,'b',new int[]{4});
-        automata2.agregarTransicionLambda(0, new int[]{1,3});
-
-        cadena = "bbbb";
-        System.out.println(cadena);
-        System.out.println(automata2.reconocer(cadena));
+        Set<Integer> asdf = new HashSet<Integer>();
+        asdf.add(0);
+        asdf.add(24);
+        System.out.println(automata.lambda_clausura(asdf,true));
     }
 
 }
