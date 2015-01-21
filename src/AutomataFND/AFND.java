@@ -5,9 +5,10 @@
  */
 package AutomataFND;
 
+import practica3.Proceso;
+
 import java.util.HashSet;
 import java.util.Set;
-import practica3.Proceso;
 
 /**
  *
@@ -24,9 +25,9 @@ public class AFND implements Cloneable, Proceso {
      *
      */
     public AFND() {
-        estadosFinales = new HashSet<>();
-        transiciones = new HashSet<>();
-        transicionesLambda = new HashSet<>();
+        estadosFinales = new HashSet<Integer>();
+        transiciones = new HashSet<TransicionAFND>();
+        transicionesLambda = new HashSet<TransicionLambda>();
     }
 
     /**
@@ -44,7 +45,14 @@ public class AFND implements Cloneable, Proceso {
     }
 
     private int[] transicion(int estado, char simbolo) {
-        int[] macroestado = null;
+        Set<Integer> macroestado = new HashSet<Integer>();
+        for (TransicionAFND transicion : transiciones) {
+            if (transicion.getEstadoOrigen() == estado && transicion.getSimbolo() == simbolo) {
+                macroestado.addAll(transicion.getEstadosDestino());
+                break;
+            }
+
+        }
         return macroestado;
         //TODO 
     }
@@ -72,7 +80,7 @@ public class AFND implements Cloneable, Proceso {
     
     
     private Set<Integer> lambda_clausura(Set<Integer> macroestado, boolean primera_llamada) {
-        Set<Integer> clausura = new HashSet<>();
+        Set<Integer> clausura = new HashSet<Integer>();
         if (!primera_llamada) 
             clausura.addAll(macroestado);
                     
@@ -99,11 +107,11 @@ public class AFND implements Cloneable, Proceso {
     @Override
     public boolean reconocer(String cadena) {
         char[] simbolos = cadena.toCharArray();
-        Set<Integer> estado = new HashSet<>();
+        Set<Integer> estado = new HashSet<Integer>();
         estado.add(0);//El estado inicial es el 0
         Set<Integer> macroestado = lambda_clausura(estado, true);
-        for (int i = 0; i < simbolos.length; i++) {
-            macroestado = transicion(macroestado, simbolos[i]);
+        for (char simbolo : simbolos) {
+            macroestado = transicion(macroestado, simbolo);
         }
         return esFinal(macroestado);
     }
@@ -122,7 +130,7 @@ public class AFND implements Cloneable, Proceso {
         int[] estadosFinales3 = {8, 9, 3};
         automata.agregarTransicionLambda(24, estadosFinales3);
 
-        Set<Integer> asdf = new HashSet<>();
+        Set<Integer> asdf = new HashSet<Integer>();
         asdf.add(0);
         asdf.add(24);
         System.out.println(automata.lambda_clausura(asdf,true));

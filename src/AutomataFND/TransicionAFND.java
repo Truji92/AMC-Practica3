@@ -30,7 +30,7 @@ public class TransicionAFND {
     public TransicionAFND(int estadoOrigen, char simbolo, int[] estadosDestino) {
         this.estadoOrigen = estadoOrigen;
         this.simbolo = simbolo;
-        this.estadosDestino = new HashSet<>();
+        this.estadosDestino = new HashSet<Integer>();
         for (int estado : estadosDestino) {
             this.estadosDestino.add(estado);
         }
@@ -61,9 +61,7 @@ public class TransicionAFND {
     }
 
     /**
-     * Compara dos objetos {
-     *
-     * @this} atendiendo a si representan el conjunto de transiciones para un
+     * Compara dos objetos {@this} atendiendo a si representan el conjunto de transiciones para un
      * mismo estado inicial y simbolo. Si estadoInicial y simbolo coinciden,
      * devolverá true aunque el conjuntos de estados destino sea diferente.
      * @param obj objeto a comparar
@@ -88,15 +86,15 @@ public class TransicionAFND {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + this.estadoOrigen;
-        hash = 67 * hash + this.simbolo;
+        int hash = this.estadoOrigen;
+        hash = 100 * hash + this.estadoOrigen;
+        hash = 100 * hash + this.simbolo;
         return hash;
     }
 
     @Override
     public String toString() {
-        String resultado = new String();
+        String resultado = "";
         resultado += "(" + estadoOrigen + ", " + simbolo + ") -> ";
         for (int destino : estadosDestino) {
             resultado += destino + " ";

@@ -5,6 +5,12 @@
  */
 package AutomataFD;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author Alejandro Trujillo Caballero
@@ -14,6 +20,8 @@ public class TransicionAFD implements Cloneable {
     private final int estadoOrigen;
     private final int estadoDestino;
     private final char simbolo;
+
+
 
     /**
      * Constructor que crea una transición con los atributos pasados por
@@ -78,10 +86,10 @@ public class TransicionAFD implements Cloneable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 17 * hash + this.estadoOrigen;
-        hash = 17 * hash + this.estadoDestino;
-        hash = 17 * hash + this.simbolo;
+        int hash = this.estadoOrigen;
+        hash = 100 * hash + this.estadoOrigen;
+        hash = 100 * hash + this.estadoDestino;
+        hash = 100 * hash + this.simbolo;
         return hash;
     }
 
@@ -107,6 +115,36 @@ public class TransicionAFD implements Cloneable {
     @Override
     public String toString() {
         return String.format("(%1$d, %2$c) -> %3$d", estadoOrigen, simbolo, estadoDestino);
+
+    }
+
+    public static void main(String[] args) {
+        Set<Integer> set = new HashSet<Integer>();
+        FileWriter file;
+        PrintWriter writer;
+
+        try {
+            file = new FileWriter("./pruebaHash");
+            writer = new PrintWriter(file);
+
+            for (int i = 0; i < 1000000  ; i++) {
+
+                TransicionAFD t = new TransicionAFD((int) (Math.random()*1000+1), (char) (Math.random()*10 +30), (int) (Math.random()*1000+1));
+                int code = t.hashCode();
+                //System.out.println("Transición: " + t.toString() + "   --- Codigo: " + code);
+                writer.println("Transición: " + t.toString() + "   --- Codigo: " + code);
+                if(!set.add(code)) {
+                    // System.out.println("NO HA ENTRADO");
+                    writer.println("NO HA ENTRADO");
+
+                }
+            }
+
+
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

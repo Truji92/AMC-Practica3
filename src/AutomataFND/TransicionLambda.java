@@ -27,7 +27,7 @@ public class TransicionLambda {
      */
     public TransicionLambda(int estadoOrigen, int[] estadosDestino) {
         this.estadoOrigen = estadoOrigen;
-        this.estadosDestino = new HashSet<>();
+        this.estadosDestino = new HashSet<Integer>();
         for (int estado : estadosDestino) {
             this.estadosDestino.add(estado);
         }
@@ -50,9 +50,7 @@ public class TransicionLambda {
     }
 
     /**
-     * Compara dos objetos {
-     *
-     * @this} atendiendo a si representan el conjunto de transiciones lambda
+     * Compara dos objetos TransicionLambda atendiendo a si representan el conjunto de transiciones lambda
      * para un mismo estado inicial. Si estadoInicial coincide, devolverá true
      * aunque el conjuntos de estados destino sea diferente.
      * @param obj objeto a comparar
@@ -83,7 +81,7 @@ public class TransicionLambda {
 
     @Override
     public String toString() {
-        String resultado = new String();
+        String resultado = "";
         resultado += "(" + estadoOrigen + ", " + 'λ' + ") -> ";
         for (int destino : estadosDestino) {
             resultado += destino + " ";
