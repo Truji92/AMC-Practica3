@@ -13,6 +13,7 @@ public class Automata extends JFrame {
     JComboBox<String> selAutomatas;
     JLabel listAutomatas;
     JLabel labelFichero;
+    
     JTextArea textArea;
     JTextField input;
 
