@@ -137,10 +137,42 @@ public class AFD implements Cloneable, Proceso {
         }
         return resultado;
     }
+
+    //PARSER
+    static AFD contenido(String archivo) throws FileNotFoundException, IOException
+    {
+        String contenido;
+        String texto="";
+        boolean fi=false;
+        String[] partes;
+        AFD automata=new AFD();
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((contenido = b.readLine())!=null)
+        {
+            partes=contenido.split(";");
+            if(partes[0].compareTo("#!")==0)
+                fi=true;
+            
+            if(fi)
+            {
+                if(partes[0].compareTo("#!")!=0&&partes[0].compareTo("")!=0)
+                    automata.estadosFinales.add(Integer.parseInt(partes[0]));
+            }
+            
+            else
+            {
+                automata.agregarTransicion(Integer.parseInt(partes[0]), partes[1].toCharArray()[0], Integer.parseInt(partes[2]));
+            }
+        }
+        b.close();
+        return automata;
+    }
     
     
     public static void main(String[] args) {
         AFD automata = new AFD();
+        /*
         automata.agregarTransicion(0, 'J', 1);
         automata.agregarTransicion(0, 'j', 1);
         automata.agregarTransicion(1, 'O', 2);
@@ -153,7 +185,8 @@ public class AFD implements Cloneable, Proceso {
         automata.agregarTransicion(4, 't', 5);
         automata.agregarTransicion(5, 'A', 6);
         automata.agregarTransicion(5, 'a', 6);
-        automata.estadosFinales.add(6);
+        automata.estadosFinales.add(6);*/
+        automata = contenido("NOMBRE ARCHIVO");
         
         System.out.println(automata);
 
