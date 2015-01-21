@@ -89,6 +89,16 @@ public class TransicionLambda {
         return resultado;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        TransicionLambda transicion = new TransicionLambda(this.estadoOrigen, new int[]{});
+
+        for (int estado : estadosDestino)
+            transicion.estadosDestino.add(estado);
+
+        return transicion;
+    }
+
     public static void main(String[] args) {
         int[] destinos = {1,2,3,4,5,6,7,8777,77};
         TransicionLambda t = new TransicionLambda(1, destinos);

@@ -133,6 +133,25 @@ public class AFND implements Cloneable, Proceso {
 
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        AFND automata = new AFND();
+
+        automata.estadosFinales = new HashSet<Integer>();
+        for (int estadofinal : estadosFinales)
+            automata.estadosFinales.add(estadofinal);
+
+        automata.transiciones = new HashSet<TransicionAFND>();
+        for (TransicionAFND transicion: transiciones)
+            automata.transiciones.add((TransicionAFND) transicion.clone());
+
+        automata.transicionesLambda = new HashSet<TransicionLambda>();
+        for (TransicionLambda transicion : transicionesLambda)
+            automata.transicionesLambda.add((TransicionLambda) transicion.clone());
+
+        return automata;
+    }
+
     public static void main(String[] args) {
         AFND automata = new AFND();
         automata.estadosFinales.add(3);

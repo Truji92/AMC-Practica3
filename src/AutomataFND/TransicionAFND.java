@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * @author alejandro
  */
 public class TransicionAFND {
@@ -22,10 +21,10 @@ public class TransicionAFND {
      * Constructor que crea una transición con los atributos pasados por
      * parametro.
      *
-     * @param estadoOrigen Estado inicial de la transición.
-     * @param simbolo Simbolo de la transición.
+     * @param estadoOrigen   Estado inicial de la transición.
+     * @param simbolo        Simbolo de la transición.
      * @param estadosDestino Conjunto de estados destino a los que el autómata
-     * puede ir desde el estado inicial con el mismo simbolo.
+     *                       puede ir desde el estado inicial con el mismo simbolo.
      */
     public TransicionAFND(int estadoOrigen, char simbolo, int[] estadosDestino) {
         this.estadoOrigen = estadoOrigen;
@@ -36,8 +35,8 @@ public class TransicionAFND {
         }
     }
 
+
     /**
-     *
      * @return Estado origen de la transición.
      */
     public int getEstadoOrigen() {
@@ -45,7 +44,6 @@ public class TransicionAFND {
     }
 
     /**
-     *
      * @return Simbolo de la transición.
      */
     public char getSimbolo() {
@@ -53,7 +51,6 @@ public class TransicionAFND {
     }
 
     /**
-     *
      * @return Conjunto de estados destino de la transición.
      */
     public Set<Integer> getEstadosDestino() {
@@ -64,6 +61,7 @@ public class TransicionAFND {
      * Compara dos objetos {@this} atendiendo a si representan el conjunto de transiciones para un
      * mismo estado inicial y simbolo. Si estadoInicial y simbolo coinciden,
      * devolverá true aunque el conjuntos de estados destino sea diferente.
+     *
      * @param obj objeto a comparar
      * @return True si obj representa la misma Transición
      */
@@ -101,7 +99,15 @@ public class TransicionAFND {
         }
         return resultado;
     }
-    
-    
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        TransicionAFND transicion = new TransicionAFND(this.estadoOrigen, this.simbolo, new int[]{});
+
+        for (int estado : estadosDestino)
+            transicion.estadosDestino.add(estado);
+
+        return transicion;
+    }
 }
