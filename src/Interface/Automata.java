@@ -10,6 +10,7 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class Automata extends JFrame {
             }
         });
 
-        JButton bEjecutar = new JButton("Ejecutar");
+        final JButton bEjecutar = new JButton("Ejecutar");
         bEjecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -106,11 +107,20 @@ public class Automata extends JFrame {
                 middleDer.setText(middleDer.getText() +
                         "Cadena de entrada: " + texto + "\n");
                 if(resultado) {
-                    texto = "El autómata reconoció la cadena";
+                    texto = "El autómata reconoció la cadena\n\n";
                 } else {
-                    texto = "El autómata no reconoció la cadena";
+                    texto = "El autómata no reconoció la cadena\n\n";
                 }
                 middleDer.setText(middleDer.getText() + texto);
+            }
+        });
+
+        input.getInputMap().put(KeyStroke.getKeyStroke(
+                        KeyEvent.VK_ENTER, 0),
+                "check");
+        input.getActionMap().put("check", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                bEjecutar.doClick();
             }
         });
 
