@@ -54,6 +54,9 @@ public class Automata extends JFrame {
         middle.add(middleIzqContainer);
         middle.add(middleDerContainer);
 
+        String userDirLocation = System.getProperty("user.dir");
+        final File userDir = new File(userDirLocation);
+
         final String[] opc = {"Autómata Finito Determinista",
             "Autómata Finito No Determinista"};
 
@@ -64,7 +67,7 @@ public class Automata extends JFrame {
         bSelec.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(userDir);
                 int returVal = fileChooser.showOpenDialog(null);
 
                 if(returVal == JFileChooser.APPROVE_OPTION) {
