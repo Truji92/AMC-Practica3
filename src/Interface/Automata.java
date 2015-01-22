@@ -32,16 +32,27 @@ public class Automata extends JFrame {
 
         JPanel top = new JPanel(new BorderLayout());
         JPanel bottom = new JPanel(new BorderLayout());
-        final JTextPane middle = new JTextPane();
+        final JTextPane middleIzq = new JTextPane();
+        final JTextPane middleDer = new JTextPane();
         StyleContext sc = StyleContext.getDefaultStyleContext();
 
-        middle.setCharacterAttributes(sc.addAttribute(
+        middleIzq.setCharacterAttributes(sc.addAttribute(
+                SimpleAttributeSet.EMPTY,
+                StyleConstants.Foreground,
+                Color.WHITE), false);
+        middleDer.setCharacterAttributes(sc.addAttribute(
                 SimpleAttributeSet.EMPTY,
                 StyleConstants.Foreground,
                 Color.WHITE), false);
 
-        JScrollPane middleContainer = new JScrollPane(middle);
-        middle.setBackground(Color.DARK_GRAY);
+        JScrollPane middleIzqContainer = new JScrollPane(middleIzq);
+        JScrollPane middleDerContainer = new JScrollPane(middleDer);
+        middleIzq.setBackground(Color.DARK_GRAY);
+        middleDer.setBackground(Color.DARK_GRAY);
+
+        JPanel middle = new JPanel(new GridLayout());
+        middle.add(middleIzqContainer);
+        middle.add(middleDerContainer);
 
         final String[] opc = {"Autómata Finito Determinista",
             "Autómata Finito No Determinista"};
@@ -61,13 +72,11 @@ public class Automata extends JFrame {
                     String opcion = (String) opciones.getSelectedItem();
                     if(opcion.equals(opc[0])) {
                         automata = AFD.contenido(file);
-                        middle.setText(automata.toString() +
-                                "----------------------------------------\n\n");
+                        middleIzq.setText(automata.toString());
                     } else {
                         try {
                             automataND = AFND.cargarArchivo(file);
-                            middle.setText(automataND.toString() +
-                                "----------------------------------------\n\n");
+                            middleIzq.setText(automataND.toString());
                         } catch (FileNotFoundException ex) {
 
                         } catch (IOException ex) {
@@ -91,14 +100,14 @@ public class Automata extends JFrame {
                 } else {
                     resultado = automataND.reconocer(texto);
                 }
-                middle.setText(middle.getText() +
-                        "\n\nCadena de entrada: " + texto + "\n");
+                middleDer.setText(middleDer.getText() +
+                        "Cadena de entrada: " + texto + "\n");
                 if(resultado) {
                     texto = "El autómata reconoció la cadena";
                 } else {
                     texto = "El autómata no reconoció la cadena";
                 }
-                middle.setText(middle.getText() + texto);
+                middleDer.setText(middleDer.getText() + texto);
             }
         });
 
@@ -109,7 +118,7 @@ public class Automata extends JFrame {
         bottom.add(bEjecutar, BorderLayout.EAST);
 
         this.add(top, BorderLayout.NORTH);
-        this.add(middleContainer, BorderLayout.CENTER);
+        this.add(middle, BorderLayout.CENTER);
         this.add(bottom, BorderLayout.SOUTH);
 
         setVisible(true);
