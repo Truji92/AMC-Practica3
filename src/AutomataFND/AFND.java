@@ -171,21 +171,29 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
-    public static AFND cargarArchivo(String archivo) throws FileNotFoundException, IOException {
+    public static AFND cargarArchivo(File archivo) throws FileNotFoundException, IOException {
         String contenido;
         String[] partes, partes2;
         int[] estf;
         boolean finales = false;
+        boolean lambdas = false;
         AFND automata = new AFND();
         FileReader f = new FileReader(archivo);
         BufferedReader b = new BufferedReader(f);
         while ((contenido = b.readLine()) != null) {
             partes = contenido.split(";");
             if (partes[0].compareTo("#!") == 0)
+                lambdas = true;
+
+            if (partes[0].compareTo("#!!") == 0)
                 finales = true;
 
-            if (finales) {
-                if (partes[0].compareTo("#!") != 0 && partes[0].compareTo("") != 0)
+            if (lambdas && !finales) {
+                if (partes[0].compareTo("#!") != 0 && partes[0].compareTo("") != 0) {
+                    partes2 = partes[1].split(",");
+                }
+            } else if (finales) {
+                if (partes[0].compareTo("#!!") != 0 && partes[0].compareTo("") != 0)
                     automata.estadosFinales.add(Integer.parseInt(partes[0]));
             } else {
 
