@@ -30,18 +30,35 @@ public class AFND implements Cloneable, Proceso {
     }
 
     /**
-     * @param estadoOrigen
-     * @param simbolo
-     * @param estadosFinales
+     * Agega al autómata una transición.
+     *
+     * @param estadoOrigen   Estado origen de la transición.
+     * @param simbolo        Simbolo de la transición
+     * @param estadosFinales Estados finales a los que puede ir el autómata desde el estado origen utilizando el
+     *                       simbolo de esta transición.
      */
     public void agregarTransicion(int estadoOrigen, char simbolo, int[] estadosFinales) {
         transiciones.add(new TransicionAFND(estadoOrigen, simbolo, estadosFinales));
     }
 
+    /**
+     * Agrega una transición lambda al autómata
+     *
+     * @param estadoOrigen   Estado origen de la transición
+     * @param estadosFinales Conjunto de estados finales a los que puede ir el autómata mediante una transición
+     *                       lambda desde el estado origen.
+     */
     public void agregarTransicionLambda(int estadoOrigen, int[] estadosFinales) {
         transicionesLambda.add(new TransicionLambda(estadoOrigen, estadosFinales));
     }
 
+    /**
+     * Realiza una transición (si existe) para un estdo y un simbolo dados.
+     *
+     * @param estado  Estado origen
+     * @param simbolo Simbolo
+     * @return Conjunto de estados a los que el autómata puede ir tras la transición (incluidas transiciones lambda).
+     */
     private Set<Integer> transicion(int estado, char simbolo) {
         Set<Integer> macroestado = new HashSet<Integer>();
         for (TransicionAFND transicion : transiciones) {
@@ -54,6 +71,14 @@ public class AFND implements Cloneable, Proceso {
         return macroestado;
     }
 
+    /**
+     * Realiza todas las transiones posibles a partir de un macroestado y un simbolo.
+     *
+     * @param macroestado Macroestado inicial.
+     * @param simbolo     símbolo.
+     * @return Conjunto de estados a los que el autómata puede ir desde el macroestado incial (incluidas transiciones
+     * lambda).
+     */
     public Set<Integer> transicion(Set<Integer> macroestado, char simbolo) {
         Set<Integer> macroestadoDestino = new HashSet<Integer>();
 
@@ -63,6 +88,13 @@ public class AFND implements Cloneable, Proceso {
         return macroestadoDestino;
     }
 
+    /**
+     * Realiza las transiciones lambda posibles a partir de un estado.
+     *
+     * @param estado Estado origen.
+     * @return Conjunto de estados a los que el autómnata puede ir desde el estado inicial mediante unicamente transiciones
+     * lambda
+     */
     public Set<Integer> transicionLambda(int estado) {
         Set<Integer> macroestado = new HashSet<Integer>();
         for (TransicionLambda transicion : transicionesLambda)
@@ -81,6 +113,12 @@ public class AFND implements Cloneable, Proceso {
         return false;
     }
 
+    /**
+     * Comprueba si algun estado de un macroestado es final, y por tanto lo es el macroestado.
+     *
+     * @param macroestado Macroestado que se desea analizar.
+     * @return {@code true} si hay al menos un estado final en el macroestado, {@code false} en caso contrario.
+     */
     public boolean esFinal(Set<Integer> macroestado) {
         for (int estado : macroestado)
             if (esFinal(estado))
@@ -88,16 +126,35 @@ public class AFND implements Cloneable, Proceso {
         return false;
     }
 
+    /**
+     * Calcula la lambda-clausura de un estado.
+     *
+     * @param estado Estado inicial.
+     * @return lambda-calusura del estado inicial.
+     */
     private Set<Integer> lambda_clausura(int estado) {
         Set<Integer> est = new HashSet<Integer>();
         est.add(estado);
         return lambda_clausura(est);
     }
 
+    /**
+     * Calcula la lambda-clausura de un macroestado
+     *
+     * @param macroestado Macroestado inicial.
+     * @return lamda-clausura del macroestado.
+     */
     private Set<Integer> lambda_clausura(Set<Integer> macroestado) {
         return lambda_clausura(macroestado, true);
     }
 
+    /**
+     * Método auxiliar para facilitar el cálculo de una lambda-clausura
+     *
+     * @param macroestado     Macroestado
+     * @param primera_llamada Parametro de estado (necesario para llamadas recursivas)
+     * @return lambda-clausura del macroestado.
+     */
     private Set<Integer> lambda_clausura(Set<Integer> macroestado, boolean primera_llamada) {
         Set<Integer> clausura = new HashSet<Integer>();
         if (!primera_llamada)
@@ -124,10 +181,6 @@ public class AFND implements Cloneable, Proceso {
         return esFinal(macroestado);
     }
 
-    public static AFND pedir() {
-        return null;
-
-    }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
@@ -149,7 +202,24 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
-
+    /**
+     * Crea un objeto AFND a partir de la inforación almacenada en un archivo con formato:
+     * origen;simbolo;destino1,destino2,destino3,...
+     * origen;simbolo;destino1,destino2,destino3,...
+     * ...
+     * #!
+     * origen;destino1,destino2,destino3,...
+     * origen;destino1,destino2,destino3,...
+     * ...
+     * #!!
+     * estadoFinal
+     * estadoFinal
+     * ...
+     *
+     * @param archivo Objeto File en el que se encuentran los datos.
+     * @return un automata creado mediante los datos cargados.
+     * @throws IOException Si el formato del archivo no es adecuado o si hay algun error al acceder al archivo.
+     */
     public static AFND cargarArchivo(File archivo) throws IOException {
         String contenido;
         String[] partes, partes2;
@@ -193,50 +263,37 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
+    /**
+     * Transforma el automata en String con formato:
+     * <p/>
+     * "transiciones:
+     * (origen1, simbolo1) -> destino1 destino2 ...
+     * (origen2, simbolo2) -> destino1 destino2 ...
+     * ...
+     * transicionesLambda:
+     * (origen1, λ) -> destino1 destino2 ...
+     * (origen2, λ) -> destino1 destino2 ...
+     * estadosFinales:
+     * estado1
+     * estado2
+     * ...
+     *
+     * @return String formateado con la información.
+     */
     @Override
     public String toString() {
         String resultado = "";
         resultado += "Transiciones: \n";
         for (TransicionAFND transicion : transiciones) {
-            resultado += "\t"+transicion.toString()+ "\n";
+            resultado += "\t" + transicion.toString() + "\n";
         }
         resultado += "Trasicones Lambda: \n";
         for (TransicionLambda transicion : transicionesLambda)
-            resultado += "\t"+transicion.toString()+"\n";
-        resultado +=  "estadosFinales: \n";
+            resultado += "\t" + transicion.toString() + "\n";
+        resultado += "estadosFinales: \n";
         for (int estado : estadosFinales) {
-            resultado += "\t"+estado +" \n";
+            resultado += "\t" + estado + " \n";
         }
         return resultado;
     }
-
-    public static void main(String[] args) {
-        AFND automata = new AFND();
-        automata.estadosFinales.add(3);
-        /*
-        automata.agregarTransicion(0, '0', new int[]{0, 1});
-        automata.agregarTransicion(0, '1', new int[]{0});
-        automata.agregarTransicion(1, '0', new int[]{2});
-        automata.agregarTransicion(1, '1', new int[]{2});
-        automata.agregarTransicion(2, '0', new int[]{3});
-        automata.agregarTransicion(2, '1', new int[]{3});*/
-
-        String cadena = "001011011";
-        System.out.println(cadena);
-        System.out.println(automata.reconocer(cadena));
-
-        AFND automata2 = new AFND();
-        automata2.estadosFinales.add(2);
-        automata2.estadosFinales.add(4);
-        automata2.agregarTransicion(1, 'a', new int[]{2});
-        automata2.agregarTransicion(2, 'a', new int[]{2});
-        automata2.agregarTransicion(3, 'b', new int[]{4});
-        automata2.agregarTransicion(4, 'b', new int[]{4});
-        automata2.agregarTransicionLambda(0, new int[]{1, 3});
-
-        cadena = "bbbb";
-        System.out.println(cadena);
-        System.out.println(automata2.reconocer(cadena));
-    }
-
 }
