@@ -105,7 +105,6 @@ public class AFND implements Cloneable, Proceso {
         return macroestado;
     }
 
-
     @Override
     public boolean esFinal(int estado) {
         for (int estadoFinal : estadosFinales)
