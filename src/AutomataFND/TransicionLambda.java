@@ -79,6 +79,11 @@ public class TransicionLambda {
         return hash;
     }
 
+    /**
+     * Devuelve la transición en formato (origen, λ) -> destino1 destino2 destino3 ...
+     *
+     * @return String con el contenido del objeto.
+     */
     @Override
     public String toString() {
         String resultado = "";
@@ -97,13 +102,6 @@ public class TransicionLambda {
             transicion.estadosDestino.add(estado);
 
         return transicion;
-    }
-
-    public static void main(String[] args) {
-        int[] destinos = {1,2,3,4,5,6,7,8777,77};
-        TransicionLambda t = new TransicionLambda(1, destinos);
-        
-        System.out.println(t);
     }
  
             

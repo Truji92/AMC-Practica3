@@ -90,6 +90,11 @@ public class TransicionAFND {
         return hash;
     }
 
+    /**
+     * Devuelve la transición en formato (origen, simbolo) -> destino1 destino2 destino3 ...
+     *
+     * @return String con el contenido del objeto.
+     */
     @Override
     public String toString() {
         String resultado = "";
