@@ -1,6 +1,7 @@
 package Interface;
 
 import AutomataFD.AFD;
+import AutomataFND.AFND;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by caenrique93 on 21/01/15.
@@ -18,6 +21,7 @@ public class Automata extends JFrame {
 
     JFileChooser fileChooser;
     AFD automata;
+    AFND automataND;
 
     public Automata() {
         automata = new AFD();
@@ -57,8 +61,18 @@ public class Automata extends JFrame {
                     String opcion = (String) opciones.getSelectedItem();
                     if(opcion.equals(opc[0])) {
                         automata = AFD.contenido(file);
+                        middle.setText(automata.toString() +
+                                "----------------------------------------\n\n");
                     } else {
+                        try {
+                            automataND = AFND.cargarArchivo(file);
+                            middle.setText(automataND.toString() +
+                                "----------------------------------------\n\n");
+                        } catch (FileNotFoundException ex) {
 
+                        } catch (IOException ex) {
+
+                        }
                     }
                 }
             }
@@ -73,11 +87,18 @@ public class Automata extends JFrame {
                 boolean resultado;
                 if(opcion.equals(opc[0])) {
                     resultado = automata.reconocer(texto);
-                    middle.setText("resultado: " + resultado);
-                } else {
-                    //añadir
-                }
 
+                } else {
+                    resultado = automataND.reconocer(texto);
+                }
+                middle.setText(middle.getText() +
+                        "\n\nCadena de entrada: " + texto + "\n");
+                if(resultado) {
+                    texto = "El autómata reconoció la cadena";
+                } else {
+                    texto = "El autómata no reconoció la cadena";
+                }
+                middle.setText(middle.getText() + texto);
             }
         });
 
