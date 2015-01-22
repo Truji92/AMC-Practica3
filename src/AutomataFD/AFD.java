@@ -199,7 +199,7 @@ public class AFD implements Cloneable, Proceso {
 
         System.out.println(elAutomata);
 
-        String cadena = "jop uta";
+        String cadena = "joPussTa";
         System.out.println(cadena);
         System.out.println(elAutomata.reconocer(cadena));
     }*/

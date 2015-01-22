@@ -12,7 +12,6 @@ import java.util.Set;
 import java.io.*;
 
 /**
- *
  * @author alejandro
  */
 public class AFND implements Cloneable, Proceso {
@@ -23,7 +22,6 @@ public class AFND implements Cloneable, Proceso {
 
     /**
      * Constructor por defecto, crea un autómata vacío.
-     *
      */
     public AFND() {
         estadosFinales = new HashSet<Integer>();
@@ -32,7 +30,6 @@ public class AFND implements Cloneable, Proceso {
     }
 
     /**
-     *
      * @param estadoOrigen
      * @param simbolo
      * @param estadosFinales
@@ -68,7 +65,7 @@ public class AFND implements Cloneable, Proceso {
 
     public Set<Integer> transicionLambda(int estado) {
         Set<Integer> macroestado = new HashSet<Integer>();
-        for (TransicionLambda transicion: transicionesLambda)
+        for (TransicionLambda transicion : transicionesLambda)
             if (transicion.getEstadoOrigen() == estado) {
                 macroestado.addAll(transicion.getEstadosDestino());
                 break;
@@ -91,19 +88,19 @@ public class AFND implements Cloneable, Proceso {
         return false;
     }
 
-    private  Set<Integer> lambda_clausura(int estado) {
+    private Set<Integer> lambda_clausura(int estado) {
         Set<Integer> est = new HashSet<Integer>();
         est.add(estado);
         return lambda_clausura(est);
     }
-    
+
     private Set<Integer> lambda_clausura(Set<Integer> macroestado) {
         return lambda_clausura(macroestado, true);
     }
 
     private Set<Integer> lambda_clausura(Set<Integer> macroestado, boolean primera_llamada) {
         Set<Integer> clausura = new HashSet<Integer>();
-        if (!primera_llamada) 
+        if (!primera_llamada)
             clausura.addAll(macroestado);
 
         for (int estado : macroestado)
@@ -111,7 +108,7 @@ public class AFND implements Cloneable, Proceso {
                 if (transicion.getEstadoOrigen() == estado)
                     if (clausura.addAll(transicion.getEstadosDestino()))
                         clausura.addAll(lambda_clausura(clausura, false));
-        
+
         return clausura;
 
     }
@@ -142,8 +139,9 @@ public class AFND implements Cloneable, Proceso {
         for (int estadofinal : estadosFinales)
             automata.estadosFinales.add(estadofinal);
 
+
         automata.transiciones = new HashSet<TransicionAFND>();
-        for (TransicionAFND transicion: transiciones)
+        for (TransicionAFND transicion : transiciones)
             automata.transiciones.add((TransicionAFND) transicion.clone());
 
         automata.transicionesLambda = new HashSet<TransicionLambda>();
@@ -153,45 +151,51 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
-    static AFND contenidoLambda(String archivo) throws FileNotFoundException, IOException
-    {
+    public static AFND contenidoLambda(String archivo) throws FileNotFoundException, IOException {
         String contenido;
-        String[] partes,partes2;
+        String[] partes, partes2;
         int[] estf;
-        AFND automata=new AFND();
+        AFND automata = new AFND();
         FileReader f = new FileReader(archivo);
         BufferedReader b = new BufferedReader(f);
-        while((contenido = b.readLine())!=null)
-        {
-            partes=contenido.split(";");
-            partes2=partes[1].split(",");
-            estf=new int[partes2.length];
-            for(int i=0; i<partes2.length; i++)
-                estf[i]=Integer.parseInt(partes2[i]);
-            
-            automata.agregarTransicionLambda(Integer.parseInt(partes[0]),estf);
+        while ((contenido = b.readLine()) != null) {
+            partes = contenido.split(";");
+            partes2 = partes[1].split(",");
+            estf = new int[partes2.length];
+            for (int i = 0; i < partes2.length; i++)
+                estf[i] = Integer.parseInt(partes2[i]);
+
+            automata.agregarTransicionLambda(Integer.parseInt(partes[0]), estf);
         }
         b.close();
         return automata;
     }
 
-    static AFND contenido(String archivo) throws FileNotFoundException, IOException
-    {
+    public static AFND cargarArchivo(String archivo) throws FileNotFoundException, IOException {
         String contenido;
-        String[] partes,partes2;
+        String[] partes, partes2;
         int[] estf;
-        AFND automata=new AFND();
+        boolean finales = false;
+        AFND automata = new AFND();
         FileReader f = new FileReader(archivo);
         BufferedReader b = new BufferedReader(f);
-        while((contenido = b.readLine())!=null)
-        {
-            partes=contenido.split(";");
-            partes2=partes[2].split(",");
-            estf=new int[partes2.length];
-            for(int i=0; i<partes2.length; i++)
-                estf[i]=Integer.parseInt(partes2[i]);
-            
-            automata.agregarTransicion(Integer.parseInt(partes[0]),partes[1].toCharArray()[0],estf);
+        while ((contenido = b.readLine()) != null) {
+            partes = contenido.split(";");
+            if (partes[0].compareTo("#!") == 0)
+                finales = true;
+
+            if (finales) {
+                if (partes[0].compareTo("#!") != 0 && partes[0].compareTo("") != 0)
+                    automata.estadosFinales.add(Integer.parseInt(partes[0]));
+            } else {
+
+                partes2 = partes[2].split(",");
+                estf = new int[partes2.length];
+                for (int i = 0; i < partes2.length; i++)
+                    estf[i] = Integer.parseInt(partes2[i]);
+
+                automata.agregarTransicion(Integer.parseInt(partes[0]), partes[1].toCharArray()[0], estf);
+            }
         }
         b.close();
         return automata;
@@ -208,7 +212,7 @@ public class AFND implements Cloneable, Proceso {
         automata.agregarTransicion(2, '0', new int[]{3});
         automata.agregarTransicion(2, '1', new int[]{3});*/
         try {
-            automata=contenido("NOMBRE FICHERO");
+            automata = cargarArchivo("NOMBRE FICHERO");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -223,8 +227,8 @@ public class AFND implements Cloneable, Proceso {
         automata2.agregarTransicion(1, 'a', new int[]{2});
         automata2.agregarTransicion(2, 'a', new int[]{2});
         automata2.agregarTransicion(3, 'b', new int[]{4});
-        automata2.agregarTransicion(4,'b',new int[]{4});
-        automata2.agregarTransicionLambda(0, new int[]{1,3});
+        automata2.agregarTransicion(4, 'b', new int[]{4});
+        automata2.agregarTransicionLambda(0, new int[]{1, 3});
 
         cadena = "bbbb";
         System.out.println(cadena);
