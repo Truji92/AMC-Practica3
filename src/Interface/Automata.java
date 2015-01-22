@@ -4,6 +4,7 @@ import AutomataFD.AFD;
 import AutomataFND.AFND;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -12,64 +13,56 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
- * Created by caenrique93 on 21/01/15.
+ *  La clase Automata recoge todos los elementos de la interfaz gráfica.
  */
 public class Automata extends JFrame {
 
-    JFileChooser fileChooser;
     AFD automata;
     AFND automataND;
     boolean puedoEjecutar = false;
 
+    JFileChooser fileChooser;
+    JPanel top;
+    JPanel bottom;
+    JPanel middle;
+    JTextPane middleIzq;
+    JTextPane middleDer;
+    JScrollPane middleIzqContainer;
+    JScrollPane middleDerContainer;
+    JTextField input;
+    JComboBox<String> opciones;
+    JButton bSelec;
+    JButton bEjecutar;
+
+    final String[] opc = {"Autómata Finito Determinista",
+            "Autómata Finito No Determinista"};;
+
+    /**
+     *  Se encarga de llamar a los dos métodos que contruyen la interfaz.
+     */
     public Automata() {
-        automata = new AFD();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Práctica de Autómatas - AyMC");
         setSize(600, 600);
         setLocationRelativeTo(null);
 
-        JPanel top = new JPanel(new BorderLayout());
-        JPanel bottom = new JPanel(new BorderLayout());
-        final JTextPane middleIzq = new JTextPane();
-        final JTextPane middleDer = new JTextPane();
-        StyleContext sc = StyleContext.getDefaultStyleContext();
+        initComponents();
+        addListeners();
+    }
 
-        middleIzq.setCharacterAttributes(sc.addAttribute(
-                SimpleAttributeSet.EMPTY,
-                StyleConstants.Foreground,
-                Color.WHITE), false);
-        middleDer.setCharacterAttributes(sc.addAttribute(
-                SimpleAttributeSet.EMPTY,
-                StyleConstants.Foreground,
-                Color.WHITE), false);
-
-        JScrollPane middleIzqContainer = new JScrollPane(middleIzq);
-        JScrollPane middleDerContainer = new JScrollPane(middleDer);
-        middleIzq.setBackground(Color.DARK_GRAY);
-        middleDer.setBackground(Color.DARK_GRAY);
-
-        final JPanel middle = new JPanel(new GridLayout());
-        middle.add(middleIzqContainer);
-        middle.add(middleDerContainer);
-
+    /**
+     *  Se encarga de añadir las funciones que se ejecutarán cuando ocurran eventos en la interfaz.
+     */
+    private void addListeners() {
         String userDirLocation = System.getProperty("user.dir");
         final File userDir = new File(userDirLocation);
 
-        final String[] opc = {"Autómata Finito Determinista",
-            "Autómata Finito No Determinista"};
-
-        final JTextField input = new JTextField();
-        final JComboBox<String> opciones = new JComboBox<String>(opc);
-
-        JButton bSelec = new JButton("Seleccionar");
         bSelec.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser(userDir);
+                fileChooser = new JFileChooser(userDir);
                 int returVal = fileChooser.showOpenDialog(null);
 
                 if(returVal == JFileChooser.APPROVE_OPTION) {
@@ -97,7 +90,6 @@ public class Automata extends JFrame {
             }
         });
 
-        final JButton bEjecutar = new JButton("Ejecutar");
         bEjecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -125,14 +117,44 @@ public class Automata extends JFrame {
             }
         });
 
-        input.getInputMap().put(KeyStroke.getKeyStroke(
-                        KeyEvent.VK_ENTER, 0),
-                "check");
+        input.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "check");
         input.getActionMap().put("check", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 bEjecutar.doClick();
             }
         });
+    }
+
+    /**
+     *  Se encarga de inicializar todos los componentes
+     */
+    private void initComponents() {
+        automata = new AFD();
+        top = new JPanel(new BorderLayout());
+        middle = new JPanel(new GridLayout());
+        bottom = new JPanel(new BorderLayout());
+        middleIzq = new JTextPane();
+        middleDer = new JTextPane();
+        middleIzqContainer = new JScrollPane(middleIzq);
+        middleDerContainer = new JScrollPane(middleDer);
+        input = new JTextField();
+        opciones = new JComboBox<String>(opc);
+        bSelec = new JButton("Seleccionar");
+        bEjecutar = new JButton("Ejecutar");
+
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet atrSet = sc.addAttribute(
+                SimpleAttributeSet.EMPTY,
+                StyleConstants.Foreground,
+                Color.WHITE);
+        middleIzq.setCharacterAttributes(atrSet, false);
+        middleDer.setCharacterAttributes(atrSet, false);
+
+        middleIzq.setBackground(Color.DARK_GRAY);
+        middleDer.setBackground(Color.DARK_GRAY);
+
+        middle.add(middleIzqContainer);
+        middle.add(middleDerContainer);
 
         top.add(opciones, BorderLayout.CENTER);
         top.add(bSelec, BorderLayout.EAST);
