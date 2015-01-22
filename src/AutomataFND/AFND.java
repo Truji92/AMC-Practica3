@@ -151,25 +151,6 @@ public class AFND implements Cloneable, Proceso {
         return automata;
     }
 
-    public static AFND contenidoLambda(String archivo) throws FileNotFoundException, IOException {
-        String contenido;
-        String[] partes, partes2;
-        int[] estf;
-        AFND automata = new AFND();
-        FileReader f = new FileReader(archivo);
-        BufferedReader b = new BufferedReader(f);
-        while ((contenido = b.readLine()) != null) {
-            partes = contenido.split(";");
-            partes2 = partes[1].split(",");
-            estf = new int[partes2.length];
-            for (int i = 0; i < partes2.length; i++)
-                estf[i] = Integer.parseInt(partes2[i]);
-
-            automata.agregarTransicionLambda(Integer.parseInt(partes[0]), estf);
-        }
-        b.close();
-        return automata;
-    }
 
     public static AFND cargarArchivo(File archivo) throws FileNotFoundException, IOException {
         String contenido;
@@ -191,6 +172,11 @@ public class AFND implements Cloneable, Proceso {
             if (lambdas && !finales) {
                 if (partes[0].compareTo("#!") != 0 && partes[0].compareTo("") != 0) {
                     partes2 = partes[1].split(",");
+                    estf = new int[partes2.length];
+                    for (int i = 0; i < partes2.length; i++)
+                        estf[i] = Integer.parseInt(partes2[i]);
+
+                    automata.agregarTransicionLambda(Integer.parseInt(partes[0]), estf);
                 }
             } else if (finales) {
                 if (partes[0].compareTo("#!!") != 0 && partes[0].compareTo("") != 0)
@@ -219,11 +205,6 @@ public class AFND implements Cloneable, Proceso {
         automata.agregarTransicion(1, '1', new int[]{2});
         automata.agregarTransicion(2, '0', new int[]{3});
         automata.agregarTransicion(2, '1', new int[]{3});*/
-        try {
-            automata = cargarArchivo("NOMBRE FICHERO");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         String cadena = "001011011";
         System.out.println(cadena);
