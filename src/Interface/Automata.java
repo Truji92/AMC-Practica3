@@ -22,6 +22,7 @@ public class Automata extends JFrame {
         JPanel top = new JPanel(new BorderLayout());
         JPanel bottom = new JPanel(new BorderLayout());
         final JTextArea middle = new JTextArea();
+        middle.setBackground(Color.DARK_GRAY);
 
         final String[] opc = {"Autómata Finito Determinista",
             "Autómata Finito No Determinista"};

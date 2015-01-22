@@ -9,6 +9,7 @@ import practica3.Proceso;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.*;
 
 /**
  *
@@ -206,7 +207,11 @@ public class AFND implements Cloneable, Proceso {
         automata.agregarTransicion(1, '1', new int[]{2});
         automata.agregarTransicion(2, '0', new int[]{3});
         automata.agregarTransicion(2, '1', new int[]{3});*/
-        automata=contenido("NOMBRE FICHERO");
+        try {
+            automata=contenido("NOMBRE FICHERO");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String cadena = "001011011";
         System.out.println(cadena);

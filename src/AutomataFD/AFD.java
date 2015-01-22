@@ -10,6 +10,7 @@ import practica3.Proceso;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.*;
 
 /**
  *
@@ -186,8 +187,12 @@ public class AFD implements Cloneable, Proceso {
         automata.agregarTransicion(5, 'A', 6);
         automata.agregarTransicion(5, 'a', 6);
         automata.estadosFinales.add(6);*/
-        automata = contenido("NOMBRE ARCHIVO");
-        
+        try {
+            automata = contenido("NOMBRE ARCHIVO");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         System.out.println(automata);
 
         String cadena = "jop uta";
