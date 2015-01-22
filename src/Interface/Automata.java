@@ -24,7 +24,6 @@ public class Automata extends JFrame {
     AFD automata;
     AFND automataND;
     boolean puedoEjecutar = false;
-    boolean hayTexto = false;
 
     public Automata() {
         automata = new AFD();
@@ -93,6 +92,7 @@ public class Automata extends JFrame {
                             middleIzq.setText("No ha sido posible abrir el fichero");
                         }
                     }
+                    middleDer.setText("");
                 }
             }
         });
@@ -117,11 +117,8 @@ public class Automata extends JFrame {
                     } else {
                         texto = texto + "El autómata no reconoció la cadena\n\n";
                     }
-                    if(hayTexto) {
-                        texto = middleDer.getText() + texto;
-                    }
+                    texto = middleDer.getText() + texto;
                     middleDer.setText(texto);
-                    hayTexto = true;
                 } else {
                     middleDer.setText("Antes de ejecutar tienes que cargar un autómata");
                 }
