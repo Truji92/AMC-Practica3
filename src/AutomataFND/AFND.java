@@ -119,10 +119,8 @@ public class AFND implements Cloneable, Proceso {
         Set<Integer> macroestado = new HashSet<Integer>();
         macroestado.add(0);
         macroestado.addAll(lambda_clausura(0));
-        for (char simbolo : simbolos) {
+        for (char simbolo : simbolos)
             macroestado = transicion(macroestado, simbolo);
-            System.out.println(macroestado);
-        }
         return esFinal(macroestado);
     }
 
@@ -193,6 +191,23 @@ public class AFND implements Cloneable, Proceso {
         }
         b.close();
         return automata;
+    }
+
+    @Override
+    public String toString() {
+        String resultado = "";
+        resultado += "Transiciones: \n";
+        for (TransicionAFND transicion : transiciones) {
+            resultado += "\t"+transicion.toString()+ "\n";
+        }
+        resultado += "Trasicones Lambda: \n";
+        for (TransicionLambda transicion : transicionesLambda)
+            resultado += "\t"+transicion.toString()+"\n";
+        resultado +=  "estadosFinales: \n";
+        for (int estado : estadosFinales) {
+            resultado += "\t"+estado +" \n";
+        }
+        return resultado;
     }
 
     public static void main(String[] args) {
