@@ -23,6 +23,8 @@ public class Automata extends JFrame {
     JFileChooser fileChooser;
     AFD automata;
     AFND automataND;
+    boolean puedoEjecutar = false;
+    boolean hayTexto = false;
 
     public Automata() {
         automata = new AFD();
@@ -51,7 +53,7 @@ public class Automata extends JFrame {
         middleIzq.setBackground(Color.DARK_GRAY);
         middleDer.setBackground(Color.DARK_GRAY);
 
-        JPanel middle = new JPanel(new GridLayout());
+        final JPanel middle = new JPanel(new GridLayout());
         middle.add(middleIzqContainer);
         middle.add(middleDerContainer);
 
@@ -75,16 +77,20 @@ public class Automata extends JFrame {
                     File file = fileChooser.getSelectedFile();
                     String opcion = (String) opciones.getSelectedItem();
                     if(opcion.equals(opc[0])) {
-                        automata = AFD.contenido(file);
-                        middleIzq.setText(automata.toString());
+                        try {
+                            automata = AFD.contenido(file);
+                            middleIzq.setText(automata.toString());
+                            puedoEjecutar = true;
+                        } catch (Exception ex) {
+                            middleIzq.setText("No ha sido posible abrir el fichero");
+                        }
                     } else {
                         try {
                             automataND = AFND.cargarArchivo(file);
                             middleIzq.setText(automataND.toString());
-                        } catch (FileNotFoundException ex) {
-
-                        } catch (IOException ex) {
-
+                            puedoEjecutar = true;
+                        } catch (Exception ex) {
+                            middleIzq.setText("No ha sido posible abrir el fichero");
                         }
                     }
                 }
@@ -95,23 +101,30 @@ public class Automata extends JFrame {
         bEjecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                String texto = input.getText();
-                String opcion = (String) opciones.getSelectedItem();
-                boolean resultado;
-                if(opcion.equals(opc[0])) {
-                    resultado = automata.reconocer(texto);
+                if(puedoEjecutar) {
+                    String texto = input.getText();
+                    String opcion = (String) opciones.getSelectedItem();
+                    boolean resultado;
+                    if(opcion.equals(opc[0])) {
+                        resultado = automata.reconocer(texto);
 
+                    } else {
+                        resultado = automataND.reconocer(texto);
+                    }
+                    texto = "Cadena de entrada: " + texto + "\n";
+                    if(resultado) {
+                        texto = texto + "El autómata reconoció la cadena\n\n";
+                    } else {
+                        texto = texto + "El autómata no reconoció la cadena\n\n";
+                    }
+                    if(hayTexto) {
+                        texto = middleDer.getText() + texto;
+                    }
+                    middleDer.setText(texto);
+                    hayTexto = true;
                 } else {
-                    resultado = automataND.reconocer(texto);
+                    middleDer.setText("Antes de ejecutar tienes que cargar un autómata");
                 }
-                middleDer.setText(middleDer.getText() +
-                        "Cadena de entrada: " + texto + "\n");
-                if(resultado) {
-                    texto = "El autómata reconoció la cadena\n\n";
-                } else {
-                    texto = "El autómata no reconoció la cadena\n\n";
-                }
-                middleDer.setText(middleDer.getText() + texto);
             }
         });
 

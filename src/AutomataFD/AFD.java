@@ -142,38 +142,32 @@ public class AFD implements Cloneable, Proceso {
      * @param archivo Objeto File en el que se encuentran los datos.
      * @return un automata creado mediante los datos recogidos
      */
-    public static AFD contenido(File archivo) {
+    public static AFD contenido(File archivo) throws IOException {
         String contenido;
         boolean fi=false;
         String[] partes;
         AFD automata=new AFD();
-        try {
-            FileReader f = new FileReader(archivo);
-            BufferedReader b = new BufferedReader(f);
-            while((contenido = b.readLine())!=null)
+        FileReader f = new FileReader(archivo);
+        BufferedReader b = new BufferedReader(f);
+        while((contenido = b.readLine())!=null)
+        {
+            partes=contenido.split(";");
+            if(partes[0].compareTo("#!")==0)
+                fi=true;
+
+            if(fi)
             {
-                partes=contenido.split(";");
-                if(partes[0].compareTo("#!")==0)
-                    fi=true;
-
-                if(fi)
-                {
-                    if(partes[0].compareTo("#!")!=0&&partes[0].compareTo("")!=0)
-                        automata.estadosFinales.add(Integer.parseInt(partes[0]));
-                }
-
-                else
-                {
-                    automata.agregarTransicion(Integer.parseInt(partes[0]),
-                            partes[1].toCharArray()[0], Integer.parseInt(partes[2]));
-                }
+                if(partes[0].compareTo("#!")!=0&&partes[0].compareTo("")!=0)
+                    automata.estadosFinales.add(Integer.parseInt(partes[0]));
             }
-            b.close();
-        } catch (FileNotFoundException ex){
 
-        } catch (IOException ex) {
-
+            else
+            {
+                automata.agregarTransicion(Integer.parseInt(partes[0]),
+                        partes[1].toCharArray()[0], Integer.parseInt(partes[2]));
+            }
         }
+        b.close();
         return automata;
     }
 

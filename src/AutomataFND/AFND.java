@@ -150,7 +150,7 @@ public class AFND implements Cloneable, Proceso {
     }
 
 
-    public static AFND cargarArchivo(File archivo) throws FileNotFoundException, IOException {
+    public static AFND cargarArchivo(File archivo) throws IOException {
         String contenido;
         String[] partes, partes2;
         int[] estf;
