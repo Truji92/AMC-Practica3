@@ -1,5 +1,7 @@
 package Interface;
 
+import AutomataFD.AFD;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,8 +14,10 @@ import java.io.File;
 public class Automata extends JFrame {
 
     JFileChooser fileChooser;
+    AFD automata;
 
     public Automata() {
+        automata = new AFD();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Práctica de Autómatas - AyMC");
         setSize(600, 600);
@@ -22,6 +26,7 @@ public class Automata extends JFrame {
         JPanel top = new JPanel(new BorderLayout());
         JPanel bottom = new JPanel(new BorderLayout());
         final JTextArea middle = new JTextArea();
+        JScrollPane middleContainer = new JScrollPane(middle);
         middle.setBackground(Color.DARK_GRAY);
 
         final String[] opc = {"Autómata Finito Determinista",
@@ -35,11 +40,16 @@ public class Automata extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser jFileChooser = new JFileChooser();
-                int returVal = jFileChooser.showOpenDialog(middle);
+                int returVal = jFileChooser.showOpenDialog(null);
 
                 if(returVal == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
+                    String opcion = (String) opciones.getSelectedItem();
+                    if(opcion.equals(opc[0])) {
+                        automata = AFD.contenido(file);
+                    } else {
 
+                    }
                 }
             }
         });
@@ -50,11 +60,14 @@ public class Automata extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 String texto = input.getText();
                 String opcion = (String) opciones.getSelectedItem();
+                boolean resultado;
                 if(opcion.equals(opc[0])) {
-
+                    resultado = automata.reconocer(texto);
+                    middle.setText("resultado: " + resultado);
                 } else {
-
+                    //añadir
                 }
+
             }
         });
 
@@ -65,7 +78,7 @@ public class Automata extends JFrame {
         bottom.add(bEjecutar, BorderLayout.EAST);
 
         this.add(top, BorderLayout.NORTH);
-        this.add(middle, BorderLayout.CENTER);
+        this.add(middleContainer, BorderLayout.CENTER);
         this.add(bottom, BorderLayout.SOUTH);
 
         setVisible(true);
