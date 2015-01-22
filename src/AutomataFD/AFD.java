@@ -7,10 +7,10 @@ package AutomataFD;
 
 import practica3.Proceso;
 
+import java.io.*;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.*;
 
 /**
  *
@@ -96,15 +96,6 @@ public class AFD implements Cloneable, Proceso {
         return esFinal(estado);
     }
 
-    /**
-     * Solicita los datos de un autómata por teclado.
-     * @return El objeto autómata AFD creado con la información recogida.
-     */
-    public static AFD pedir() {
-        AFD automata = new AFD();
-        // TODO pedir por teclado
-        return automata;
-    }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
@@ -127,7 +118,7 @@ public class AFD implements Cloneable, Proceso {
      */
     @Override
     public String toString() {
-        String resultado = new String();
+        String resultado = "";
         resultado += "transiciones: \n";
         for (TransicionAFD transicion : transiciones) {
             resultado += "\t"+transicion.toString()+ "\n";
@@ -139,7 +130,18 @@ public class AFD implements Cloneable, Proceso {
         return resultado;
     }
 
-    //PARSER
+    /**
+     * Crea un objeto AFD a partir de la inforación almacenada en un archivo con formato:
+     *      origen;simbolo;destino
+     *      origen;simbolo;destino
+     *      ...
+     *      #!
+     *      estadoFinal
+     *      estadoFinal
+     *      ...
+     * @param archivo Objeto File en el que se encuentran los datos.
+     * @return un automata creado mediante los datos recogidos
+     */
     public static AFD contenido(File archivo) {
         String contenido;
         boolean fi=false;
@@ -174,33 +176,5 @@ public class AFD implements Cloneable, Proceso {
         }
         return automata;
     }
-    
-    /*public static void main(String[] args) {
-        //AFD automata = new AFD();
-        /*
-        automata.agregarTransicion(0, 'J', 1);
-        automata.agregarTransicion(0, 'j', 1);
-        automata.agregarTransicion(1, 'O', 2);
-        automata.agregarTransicion(1, 'o', 2);
-        automata.agregarTransicion(2, 'P', 3);
-        automata.agregarTransicion(2, 'p', 3);
-        automata.agregarTransicion(3, 'U', 4);
-        automata.agregarTransicion(3, 'u', 4);
-        automata.agregarTransicion(4, 'T', 5);
-        automata.agregarTransicion(4, 't', 5);
-        automata.agregarTransicion(5, 'A', 6);
-        automata.agregarTransicion(5, 'a', 6);
-        automata.estadosFinales.add(6);
-        try {
-            elAutomata = contenido("NOMBRE ARCHIVO");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println(elAutomata);
-
-        String cadena = "joPussTa";
-        System.out.println(cadena);
-        System.out.println(elAutomata.reconocer(cadena));
-    }*/
 }
