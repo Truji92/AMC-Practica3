@@ -3,6 +3,9 @@ package Interface;
 import AutomataFD.AFD;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +28,14 @@ public class Automata extends JFrame {
 
         JPanel top = new JPanel(new BorderLayout());
         JPanel bottom = new JPanel(new BorderLayout());
-        final JTextArea middle = new JTextArea();
+        final JTextPane middle = new JTextPane();
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+
+        middle.setCharacterAttributes(sc.addAttribute(
+                SimpleAttributeSet.EMPTY,
+                StyleConstants.Foreground,
+                Color.WHITE), false);
+
         JScrollPane middleContainer = new JScrollPane(middle);
         middle.setBackground(Color.DARK_GRAY);
 
@@ -39,8 +49,8 @@ public class Automata extends JFrame {
         bSelec.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser jFileChooser = new JFileChooser();
-                int returVal = jFileChooser.showOpenDialog(null);
+                JFileChooser fileChooser = new JFileChooser();
+                int returVal = fileChooser.showOpenDialog(null);
 
                 if(returVal == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
