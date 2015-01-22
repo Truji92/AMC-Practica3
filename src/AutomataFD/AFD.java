@@ -170,5 +170,4 @@ public class AFD implements Cloneable, Proceso {
         b.close();
         return automata;
     }
-
 }
